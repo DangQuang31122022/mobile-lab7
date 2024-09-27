@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -7,24 +7,47 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
-import { Icon, TextInput } from "react-native-paper";
+import { Icon, IconButton, TextInput } from "react-native-paper";
 import {
   NavigationProp,
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
+import { useUserTakeNoteStore } from "../../stores/useUserTakeNoteStore";
+import { completeTaskService, getTasks } from "../../services/takeNoteService";
 
-const tasks = [
-  { id: "1", title: "To check email", completed: true },
-  { id: "2", title: "UI task web page", completed: true },
-  { id: "3", title: "Learn javascript basic", completed: true },
-  { id: "4", title: "Learn HTML Advance", completed: true },
-  { id: "5", title: "Medical App UI", completed: true },
-  { id: "6", title: "Learn Java", completed: true },
-];
+// const tasks = [
+//   { id: "1", title: "To check email", completed: true },
+//   { id: "2", title: "UI task web page", completed: true },
+//   { id: "3", title: "Learn javascript basic", completed: true },
+//   { id: "4", title: "Learn HTML Advance", completed: true },
+//   { id: "5", title: "Medical App UI", completed: true },
+//   { id: "6", title: "Learn Java", completed: true },
+// ];
 
 const TaskList = () => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
+  const { tasks, setTasks, completeTask } = useUserTakeNoteStore();
+
+  useEffect(() => {
+    // Lấy danh sách tasks từ server và cập nhật vào store
+    const fetchTasks = async () => {
+      try {
+        const tasksData = await getTasks();
+        console.log("Tasks:", tasksData);
+        setTasks(tasksData);
+      } catch (error) {
+        console.error("Failed to fetch tasks:", error);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  const handleCompleteTask = (item: any) => {
+    completeTask(item.id);
+    completeTaskService(item);
+  };
   return (
     <View style={styles.container}>
       {/* <View style={styles.header}>
@@ -50,8 +73,16 @@ const TaskList = () => {
         data={tasks}
         renderItem={({ item }) => (
           <View style={styles.taskItem}>
-            <View style={{ flexDirection: "row", gap: 10 }}>
-              <Icon source="check-circle" size={24} color="green" />
+            <View
+              style={{ flexDirection: "row", gap: 10, alignItems: "center" }}
+            >
+              <IconButton
+                icon={item.completed ? "check-circle" : "circle-outline"}
+                size={24}
+                iconColor={item.completed ? "green" : "gray"}
+                onPress={() => handleCompleteTask(item)}
+                style={{ margin: 0 }}
+              />
               <Text style={styles.taskText}>{item.title}</Text>
             </View>
 

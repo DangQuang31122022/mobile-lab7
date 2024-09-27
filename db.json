@@ -1,0 +1,28 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Twinkle",
+      "profileImage": "https://picsum.photos/700",
+      "greeting": "Hi Twinkle",
+      "subGreeting": "Have a great day ahead"
+    }
+  ],
+  "tasks": [
+    {
+      "completed": false,
+      "title": "Task 1",
+      "id": "1"
+    },
+    {
+      "completed": false,
+      "title": "Task 2",
+      "id": "2"
+    },
+    {
+      "id": "defc",
+      "title": "Op",
+      "completed": false
+    }
+  ]
+}

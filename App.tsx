@@ -7,7 +7,12 @@ import TaskManagementScreen1 from "./screens/takenote/Screen1";
 import TaskList from "./screens/takenote/Screen2";
 import TestAI from "./screens/takenote/testAI";
 import AddJob from "./screens/takenote/Screen3";
+import { useUserTakeNoteStore } from "./stores/useUserTakeNoteStore";
 const takenoteHeader = () => {
+  const { user } = useUserTakeNoteStore(); // Lấy thông tin người dùng từ store
+
+  // Kiểm tra xem user có tồn tại không
+  if (!user) return null;
   return (
     <View style={takenoteStyles.header}>
       {/* <TouchableOpacity>
@@ -18,7 +23,7 @@ const takenoteHeader = () => {
         style={takenoteStyles.profileImage}
       />
       <View>
-        <Text style={takenoteStyles.greeting}>Hi Twinkle</Text>
+        <Text style={takenoteStyles.greeting}>Hi {user.name}</Text>
         <Text style={takenoteStyles.subGreeting}>Have a great day ahead</Text>
       </View>
     </View>

@@ -20,25 +20,57 @@ import {
   ParamListBase,
   useNavigation,
 } from "@react-navigation/native";
+import { useUserTakeNoteStore } from "../../stores/useUserTakeNoteStore";
+import { addTaskService } from "../../services/takeNoteService";
 const AddJob = () => {
   const navigation: NavigationProp<ParamListBase> = useNavigation();
-  const [job, setJob] = useState("");
+  const { user, addTask } = useUserTakeNoteStore(); // Lấy thông tin user và hàm addTask từ store
+  const [job, setJob] = useState(""); // State để lưu công việc mới
+  const [loading, setLoading] = useState(false); // State để hiển thị trạng thái loading
 
-  const handleFinish = () => {
-    console.log("Job:", job);
+  const handleFinish = async () => {
+    if (!job.trim()) {
+      alert("Please enter a job.");
+      return;
+    }
+
+    setLoading(true); // Bắt đầu loading khi xử lý thêm công việc
+
+    try {
+      // Tạo task mới
+      const newTask = {
+        title: job,
+        completed: false,
+      };
+
+      // Gọi API thêm công việc mới lên server
+      const addedTask = await addTaskService(newTask);
+
+      // Cập nhật task vào store
+      addTask(addedTask);
+
+      // Điều hướng quay lại danh sách công việc sau khi hoàn thành
+      navigation.navigate("TaskList");
+    } catch (error) {
+      console.error("Error adding task:", error);
+      alert("Failed to add task. Please try again.");
+    } finally {
+      setLoading(false); // Kết thúc loading
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Avatar.Image
-          size={50}
-          source={{ uri: "https://picsum.photos/700" }} // Replace with the actual image URL
-        />
-        <View style={styles.greeting}>
-          <Text style={styles.greetingText}>Hi Twinkle</Text>
-          <Text style={styles.subText}>Have a great day ahead</Text>
-        </View>
+        {user && (
+          <>
+            <Avatar.Image size={50} source={{ uri: user.profileImage }} />
+            <View style={styles.greeting}>
+              <Text style={styles.greetingText}>{user.greeting}</Text>
+              <Text style={styles.subText}>{user.subGreeting}</Text>
+            </View>
+          </>
+        )}
         <IconButton
           icon="arrow-left"
           size={25}
@@ -56,6 +88,7 @@ const AddJob = () => {
         left={<TextInput.Icon icon="file-document-outline" />}
         onChangeText={(text) => setJob(text)}
         style={styles.input}
+        editable={!loading} // Không cho chỉnh sửa khi đang loading
       />
 
       <Button
@@ -64,6 +97,8 @@ const AddJob = () => {
         style={styles.finishButton}
         contentStyle={styles.buttonContent}
         icon="arrow-right"
+        loading={loading} // Hiển thị icon loading nếu đang thêm task
+        disabled={loading} // Vô hiệu hóa nút khi đang thêm task
       >
         FINISH
       </Button>

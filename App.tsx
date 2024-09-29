@@ -5,9 +5,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { PaperProvider } from "react-native-paper";
 import TaskManagementScreen1 from "./screens/takenote/Screen1";
 import TaskList from "./screens/takenote/Screen2";
-import TestAI from "./screens/takenote/testAI";
 import AddJob from "./screens/takenote/Screen3";
 import { useUserTakeNoteStore } from "./stores/useUserTakeNoteStore";
+import DonutHome from "./screens/donut/Screen1";
+import DonutDetailScreen from "./screens/donut/Screen2";
 const takenoteHeader = () => {
   const { user } = useUserTakeNoteStore(); // Lấy thông tin người dùng từ store
 
@@ -32,26 +33,22 @@ const takenoteHeader = () => {
 
 const RootStack = createNativeStackNavigator({
   screens: {
-    TaskManagementScreen1: TaskManagementScreen1,
-    TaskList: {
-      screen: TaskList,
-      options: {
-        headerRight: takenoteHeader,
-        headerTitle: "",
-      },
-    },
-    AddJob: {
-      screen: AddJob,
-      options: {
-        headerShown: false,
-      },
-    },
-    TestAI: {
-      screen: TestAI,
-      options: {
-        headerShown: false,
-      },
-    },
+    // TaskManagementScreen1: TaskManagementScreen1,
+    // TaskList: {
+    //   screen: TaskList,
+    //   options: {
+    //     headerRight: takenoteHeader,
+    //     headerTitle: "",
+    //   },
+    // },
+    // AddJob: {
+    //   screen: AddJob,
+    //   options: {
+    //     headerShown: false,
+    //   },
+    // },
+    DonutHome: DonutHome,
+    DonutDetailScreen: DonutDetailScreen,
   },
 });
 
